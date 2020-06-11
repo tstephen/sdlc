@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://zaizi.com" exporter="Camunda Modeler" exporterVersion="4.0.0">
+  <process id="AssureRelease" name="Assure release" isExecutable="true">
+    <startEvent id="startEvent" />
+    <sequenceFlow id="startEvent-mergeFeatureBranchToDevelop" sourceRef="startEvent" targetRef="mergeFeatureBranchToDevelop" />
+    <sequenceFlow id="mergeFeatureBranchToDevelop-buildProject" sourceRef="mergeFeatureBranchToDevelop" targetRef="buildProject" />
+    <sequenceFlow id="buildProject-buildContainerImage" sourceRef="buildProject" targetRef="buildContainerImage" />
+    <sequenceFlow id="buildContainerImage-uploadContainerImageToImageRepository" sourceRef="buildContainerImage" targetRef="uploadContainerImageToImageRepository" />
+    <sequenceFlow id="uploadContainerImageToImageRepository-analyseImageForVulnerabilities" sourceRef="uploadContainerImageToImageRepository" targetRef="analyseImageForVulnerabilities" />
+    <sequenceFlow id="analyseImageForVulnerabilities-deploy" sourceRef="analyseImageForVulnerabilities" targetRef="deploy" />
+    <endEvent id="endEvent" />
+    <sequenceFlow id="sequenceFlow-ac12bfd0-d34b-4e27-9dda-f98ad09116f4" sourceRef="deploy" targetRef="endEvent" />
+    <task id="deploy" name="Deploy to integration">
+      <incoming>analyseImageForVulnerabilities-deploy</incoming>
+      <outgoing>sequenceFlow-ac12bfd0-d34b-4e27-9dda-f98ad09116f4</outgoing>
+    </task>
+    <task id="analyseImageForVulnerabilities" name="Analyse image for vulnerabilities">
+      <incoming>uploadContainerImageToImageRepository-analyseImageForVulnerabilities</incoming>
+      <outgoing>analyseImageForVulnerabilities-deploy</outgoing>
+    </task>
+    <task id="uploadContainerImageToImageRepository" name="Upload container image to image repository">
+      <incoming>buildContainerImage-uploadContainerImageToImageRepository</incoming>
+      <outgoing>uploadContainerImageToImageRepository-analyseImageForVulnerabilities</outgoing>
+    </task>
+    <task id="buildContainerImage" name="Build container image">
+      <incoming>buildProject-buildContainerImage</incoming>
+      <outgoing>buildContainerImage-uploadContainerImageToImageRepository</outgoing>
+    </task>
+    <task id="mergeFeatureBranchToDevelop" name="Merge feature branch to develop">
+      <incoming>startEvent-mergeFeatureBranchToDevelop</incoming>
+      <outgoing>mergeFeatureBranchToDevelop-buildProject</outgoing>
+    </task>
+    <callActivity id="buildProject" name="Perform build" calledElement="PerformBuild">
+      <incoming>mergeFeatureBranchToDevelop-buildProject</incoming>
+      <outgoing>buildProject-buildContainerImage</outgoing>
+    </callActivity>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_assureRelease" name="AssureRelease">
+    <bpmndi:BPMNPlane id="BPMNPlane_assureRelease" bpmnElement="AssureRelease">
+      <bpmndi:BPMNEdge id="BPMNEdge_startEvent-mergeFeatureBranchToDevelop" bpmnElement="startEvent-mergeFeatureBranchToDevelop">
+        <omgdi:waypoint x="205" y="120" />
+        <omgdi:waypoint x="255" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_sequenceFlow-ac12bfd0-d34b-4e27-9dda-f98ad09116f4" bpmnElement="sequenceFlow-ac12bfd0-d34b-4e27-9dda-f98ad09116f4">
+        <omgdi:waypoint x="1165" y="120" />
+        <omgdi:waypoint x="1215" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_analyseImageForVulnerabilities-deploy" bpmnElement="analyseImageForVulnerabilities-deploy">
+        <omgdi:waypoint x="1005" y="120" />
+        <omgdi:waypoint x="1055" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_uploadContainerImageToImageRepository-analyseImageForVulnerabilities" bpmnElement="uploadContainerImageToImageRepository-analyseImageForVulnerabilities">
+        <omgdi:waypoint x="845" y="120" />
+        <omgdi:waypoint x="895" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_buildContainerImage-uploadContainerImageToImageRepository" bpmnElement="buildContainerImage-uploadContainerImageToImageRepository">
+        <omgdi:waypoint x="685" y="120" />
+        <omgdi:waypoint x="735" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_buildProject-buildContainerImage" bpmnElement="buildProject-buildContainerImage">
+        <omgdi:waypoint x="525" y="120" />
+        <omgdi:waypoint x="575" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_mergeFeatureBranchToDevelop-buildProject" bpmnElement="mergeFeatureBranchToDevelop-buildProject">
+        <omgdi:waypoint x="365" y="120" />
+        <omgdi:waypoint x="415" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_startEvent" bpmnElement="startEvent">
+        <omgdc:Bounds x="175" y="105" width="30" height="30" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="68" y="88" width="-6" height="-6" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_endEvent" bpmnElement="endEvent">
+        <omgdc:Bounds x="1215" y="105" width="30" height="30" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1108" y="88" width="-6" height="-6" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nh0mdc_di" bpmnElement="deploy">
+        <omgdc:Bounds x="1055" y="85" width="110" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1k4t447_di" bpmnElement="analyseImageForVulnerabilities">
+        <omgdc:Bounds x="895" y="85" width="110" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0exp0by_di" bpmnElement="uploadContainerImageToImageRepository">
+        <omgdc:Bounds x="735" y="85" width="110" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z666wv_di" bpmnElement="buildContainerImage">
+        <omgdc:Bounds x="575" y="85" width="110" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1npbxd9_di" bpmnElement="mergeFeatureBranchToDevelop">
+        <omgdc:Bounds x="255" y="85" width="110" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ft065q_di" bpmnElement="buildProject">
+        <omgdc:Bounds x="415" y="85" width="110" height="70" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
